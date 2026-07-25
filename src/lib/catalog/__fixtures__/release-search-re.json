@@ -1,0 +1,51 @@
+{
+  "created": "2026-07-25T12:00:05.000Z",
+  "count": 1,
+  "offset": 0,
+  "releases": [
+    {
+      "id": "a3f1e9b0-9d8e-4b0a-9e3a-1234567890ab",
+      "title": "Re",
+      "date": "1994-09-14",
+      "track-count": 3,
+      "artist-credit": [
+        {
+          "name": "Café Tacvba",
+          "artist": { "id": "1b2a6825-6e3a-4b1b-9f1e-8c1f8f6c8a11", "name": "Café Tacvba" }
+        }
+      ],
+      "release-group": { "primary-type": "Album", "secondary-types": [] },
+      "genres": [{ "name": "rock en español", "count": 2 }],
+      "tags": [{ "name": "mexican rock", "count": 1 }],
+      "cover-art-archive": {
+        "artwork": true,
+        "front": true,
+        "back": true,
+        "count": 2,
+        "darkened": false
+      }
+    },
+    {
+      "id": "b4a2f0c1-0e9f-4c1b-8f4a-2345678901bc",
+      "title": "Re (Edición sencillo promocional)",
+      "date": "1994-10-01",
+      "track-count": 1,
+      "artist-credit": [
+        {
+          "name": "Café Tacvba",
+          "artist": { "id": "1b2a6825-6e3a-4b1b-9f1e-8c1f8f6c8a11", "name": "Café Tacvba" }
+        }
+      ],
+      "release-group": { "primary-type": "Single", "secondary-types": [] },
+      "genres": [],
+      "tags": [],
+      "cover-art-archive": {
+        "artwork": false,
+        "front": false,
+        "back": false,
+        "count": 0,
+        "darkened": false
+      }
+    }
+  ]
+}

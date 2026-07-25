@@ -1,0 +1,25 @@
+{
+  "created": "2026-07-25T12:00:00.000Z",
+  "count": 1,
+  "offset": 0,
+  "artists": [
+    {
+      "id": "1b2a6825-6e3a-4b1b-9f1e-8c1f8f6c8a11",
+      "type": "Group",
+      "score": 100,
+      "name": "Café Tacvba",
+      "sort-name": "Cafe Tacvba",
+      "country": "MX",
+      "life-span": { "begin": "1989", "end": null, "ended": false },
+      "genres": [
+        { "name": "rock en español", "count": 5 },
+        { "name": "alternative rock", "count": 3 }
+      ],
+      "tags": [
+        { "name": "mexican", "count": 4 },
+        { "name": "latin alternative", "count": 2 }
+      ],
+      "disambiguation": "banda de rock alternativo mexicana"
+    }
+  ]
+}

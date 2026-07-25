@@ -1,0 +1,70 @@
+{
+  "id": "a3f1e9b0-9d8e-4b0a-9e3a-1234567890ab",
+  "title": "Re",
+  "date": "1994-09-14",
+  "artist-credit": [
+    {
+      "name": "Café Tacvba",
+      "artist": { "id": "1b2a6825-6e3a-4b1b-9f1e-8c1f8f6c8a11", "name": "Café Tacvba" }
+    }
+  ],
+  "release-group": { "primary-type": "Album", "secondary-types": [] },
+  "track-count": 3,
+  "genres": [{ "name": "rock en español", "count": 2 }],
+  "tags": [{ "name": "mexican rock", "count": 1 }],
+  "cover-art-archive": {
+    "artwork": true,
+    "front": true,
+    "back": true,
+    "count": 2,
+    "darkened": false
+  },
+  "media": [
+    {
+      "position": 1,
+      "track-count": 3,
+      "tracks": [
+        {
+          "id": "trk-1111-aaaa",
+          "number": "1",
+          "position": 1,
+          "title": "El Aparato",
+          "length": 245000,
+          "recording": {
+            "id": "rec-1111-aaaa",
+            "title": "El Aparato",
+            "length": 245000,
+            "genres": [{ "name": "rock en español", "count": 1 }],
+            "tags": []
+          }
+        },
+        {
+          "id": "trk-2222-bbbb",
+          "number": "2",
+          "position": 2,
+          "title": "El Borrego",
+          "length": 198000,
+          "recording": {
+            "id": "rec-2222-bbbb",
+            "title": "El Borrego",
+            "length": 198000,
+            "genres": [],
+            "tags": [{ "name": "ska", "count": 1 }]
+          }
+        },
+        {
+          "id": "trk-3333-cccc",
+          "number": "3",
+          "position": 3,
+          "title": "La Ingrata",
+          "length": 231000,
+          "recording": {
+            "id": "rec-3333-cccc",
+            "title": "La Ingrata",
+            "length": 231000
+          }
+        }
+      ]
+    }
+  ]
+}
