@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import type { PrismaClient } from '@/generated/prisma/client'
 import { createReview } from './reviews'
 import { averageRatingByArtist, averageRatingByGenre } from './ratings'
-import { createTestDb } from './test-db'
+import { createTestDb, resetDb } from './test-db'
 
 let db: PrismaClient
 let cleanup: () => Promise<void>
@@ -15,6 +15,10 @@ beforeAll(() => {
 
 afterAll(async () => {
   await cleanup()
+})
+
+afterEach(async () => {
+  await resetDb(db)
 })
 
 describe('averageRatingByArtist', () => {
@@ -40,22 +44,21 @@ describe('averageRatingByArtist', () => {
     expect(stats).toEqual([])
   })
 
-  it('sin filtro, agrupa por todos los artistas con reseñas', async () => {
-    const testDb = createTestDb()
-    try {
-      const a1 = await testDb.prisma.artist.create({ data: { name: 'Artista 1' } })
-      const a2 = await testDb.prisma.artist.create({ data: { name: 'Artista 2' } })
-      const album1 = await testDb.prisma.album.create({ data: { title: 'Álbum 1', artistId: a1.id } })
-      const album2 = await testDb.prisma.album.create({ data: { title: 'Álbum 2', artistId: a2.id } })
-      await createReview({ albumId: album1.id, rating: 4 }, testDb.prisma)
-      await createReview({ albumId: album2.id, rating: 10 }, testDb.prisma)
+  it('devuelve una lista vacía en una base de datos vacía', async () => {
+    expect(await averageRatingByArtist(undefined, db)).toEqual([])
+  })
 
-      const stats = await averageRatingByArtist(undefined, testDb.prisma)
-      expect(stats).toHaveLength(2)
-      expect(stats[0].averageRating).toBe(10) // ordenado descendente
-    } finally {
-      await testDb.cleanup()
-    }
+  it('sin filtro, agrupa por todos los artistas con reseñas', async () => {
+    const a1 = await db.artist.create({ data: { name: 'Artista 1' } })
+    const a2 = await db.artist.create({ data: { name: 'Artista 2' } })
+    const album1 = await db.album.create({ data: { title: 'Álbum 1', artistId: a1.id } })
+    const album2 = await db.album.create({ data: { title: 'Álbum 2', artistId: a2.id } })
+    await createReview({ albumId: album1.id, rating: 4 }, db)
+    await createReview({ albumId: album2.id, rating: 10 }, db)
+
+    const stats = await averageRatingByArtist(undefined, db)
+    expect(stats).toHaveLength(2)
+    expect(stats[0].averageRating).toBe(10) // ordenado descendente
   })
 })
 
@@ -78,11 +81,6 @@ describe('averageRatingByGenre', () => {
   })
 
   it('devuelve una lista vacía en una base de datos vacía', async () => {
-    const testDb = createTestDb()
-    try {
-      expect(await averageRatingByGenre(undefined, testDb.prisma)).toEqual([])
-    } finally {
-      await testDb.cleanup()
-    }
+    expect(await averageRatingByGenre(undefined, db)).toEqual([])
   })
 })

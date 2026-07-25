@@ -1,8 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import type { PrismaClient } from '@/generated/prisma/client'
 import { listRecentListens, recordListen } from './listens'
 import { ListenValidationError } from './validation'
-import { createTestDb } from './test-db'
+import { createTestDb, resetDb } from './test-db'
 
 let db: PrismaClient
 let cleanup: () => Promise<void>
@@ -17,10 +17,16 @@ afterAll(async () => {
   await cleanup()
 })
 
+afterEach(async () => {
+  await resetDb(db)
+})
+
 async function seedTrack() {
   const artist = await db.artist.create({ data: { name: 'Tame Impala' } })
   const album = await db.album.create({ data: { title: 'Currents', artistId: artist.id } })
-  const track = await db.track.create({ data: { title: 'The Less I Know the Better', artistId: artist.id, albumId: album.id } })
+  const track = await db.track.create({
+    data: { title: 'The Less I Know the Better', artistId: artist.id, albumId: album.id },
+  })
   return { artist, album, track }
 }
 
@@ -69,15 +75,10 @@ describe('recordListen', () => {
 
 describe('listRecentListens', () => {
   it('devuelve una página vacía en una base de datos vacía', async () => {
-    const testDb = createTestDb()
-    try {
-      const page = await listRecentListens({}, testDb.prisma)
-      expect(page.items).toEqual([])
-      expect(page.total).toBe(0)
-      expect(page.totalPages).toBe(0)
-    } finally {
-      await testDb.cleanup()
-    }
+    const page = await listRecentListens({}, db)
+    expect(page.items).toEqual([])
+    expect(page.total).toBe(0)
+    expect(page.totalPages).toBe(0)
   })
 
   it('pagina el historial ordenado por fecha descendente', async () => {

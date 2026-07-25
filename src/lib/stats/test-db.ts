@@ -2,9 +2,9 @@
 // migraciones de Prisma y devuelve un cliente conectado a ella. Así las pruebas nunca
 // tocan prisma/dev.db ni comparten estado entre archivos de prueba.
 //
-// No se importa desde código de producción: `listens.ts` recibe su cliente por
-// inyección de dependencias (parámetro `db`, con el singleton de `@/lib/db` como valor
-// por defecto), así que las pruebas pueden pasar el cliente de aquí sin tocar env vars
+// No se importa desde código de producción: `stats.ts` recibe su cliente por inyección
+// de dependencias (parámetro `db`, con el singleton de `@/lib/db` como valor por
+// defecto), así que las pruebas pueden pasar el cliente de aquí sin tocar env vars
 // globales ni depender de aislamiento de módulos entre archivos.
 import { execFileSync } from 'node:child_process'
 import { mkdtempSync, rmSync } from 'node:fs'

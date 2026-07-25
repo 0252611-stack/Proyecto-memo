@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import type { PrismaClient } from '@/generated/prisma/client'
 import {
   createReview,
@@ -10,7 +10,7 @@ import {
   updateReview,
 } from './reviews'
 import { ReviewValidationError } from './validation'
-import { createTestDb } from './test-db'
+import { createTestDb, resetDb } from './test-db'
 
 let db: PrismaClient
 let cleanup: () => Promise<void>
@@ -23,6 +23,12 @@ beforeAll(() => {
 
 afterAll(async () => {
   await cleanup()
+})
+
+// Cada prueba parte de una base de datos vacía, aunque todas comparten el mismo
+// archivo SQLite migrado (crear uno nuevo por prueba sería mucho más lento).
+afterEach(async () => {
+  await resetDb(db)
 })
 
 async function seedCatalog() {
@@ -154,14 +160,9 @@ describe('listRecentReviews', () => {
   })
 
   it('devuelve una lista vacía cuando no hay reseñas', async () => {
-    const testDb = createTestDb()
-    try {
-      const { items, nextCursor } = await listRecentReviews({}, testDb.prisma)
-      expect(items).toEqual([])
-      expect(nextCursor).toBeNull()
-    } finally {
-      await testDb.cleanup()
-    }
+    const { items, nextCursor } = await listRecentReviews({}, db)
+    expect(items).toEqual([])
+    expect(nextCursor).toBeNull()
   })
 
   it('pagina con cursor', async () => {

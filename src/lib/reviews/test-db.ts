@@ -24,6 +24,26 @@ export interface TestDb {
 }
 
 /**
+ * Borra todas las filas de todas las tablas, respetando el orden de llaves foráneas.
+ * Se usa entre pruebas de un mismo archivo para aislarlas sin pagar el costo de crear
+ * (y migrar) una base de datos nueva en cada `it`.
+ */
+export async function resetDb(client: PrismaClient): Promise<void> {
+  await client.$transaction([
+    client.review.deleteMany(),
+    client.listen.deleteMany(),
+    client.trackGenre.deleteMany(),
+    client.albumGenre.deleteMany(),
+    client.artistGenre.deleteMany(),
+    client.track.deleteMany(),
+    client.album.deleteMany(),
+    client.genre.deleteMany(),
+    client.artist.deleteMany(),
+    client.spotifyAccount.deleteMany(),
+  ])
+}
+
+/**
  * Crea una base de datos temporal en un directorio propio del sistema, aplica las
  * migraciones con `prisma migrate deploy` (apuntando `DATABASE_URL` a ese archivo) y
  * devuelve un `PrismaClient` listo para usar en pruebas.
