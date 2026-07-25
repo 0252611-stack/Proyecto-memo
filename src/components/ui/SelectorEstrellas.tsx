@@ -34,7 +34,6 @@ export function SelectorEstrellas({
       <div role="radiogroup" aria-label="Calificación" className="flex items-center">
         {VALORES.map((v) => {
           const esMedia = v % 2 === 1
-          const indice = Math.ceil(v / 2) - 1
           return (
             <label
               key={v}

@@ -187,6 +187,10 @@ describe('MusicBrainzCatalogSource — limitación de tasa', () => {
 
     // Primera petición: no hay petición previa, no debería esperar.
     const first = source.searchArtists('a')
+    // Deja que la primera petición avance hasta despachar su fetch (y marcar
+    // lastRequestAt) antes de mover el reloj — si no, el reloj avanzaría "antes" de
+    // que la primera petición alcance a leer Date.now() por primera vez.
+    await Promise.resolve()
     // 300ms más tarde llega una segunda petición "simultánea".
     vi.setSystemTime(new Date('2026-07-25T00:00:00.300Z'))
     const second = source.searchArtists('b')

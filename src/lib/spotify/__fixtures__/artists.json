@@ -1,0 +1,16 @@
+{
+  "artists": [
+    {
+      "id": "artist_les_amies",
+      "name": "Las Amigas",
+      "genres": ["dream pop", "shoegaze"],
+      "popularity": 42
+    },
+    {
+      "id": "artist_ruido_util",
+      "name": "Ruido Útil",
+      "genres": ["post-punk"],
+      "popularity": 30
+    }
+  ]
+}

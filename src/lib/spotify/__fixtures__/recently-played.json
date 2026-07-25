@@ -1,0 +1,70 @@
+{
+  "items": [
+    {
+      "track": {
+        "id": "track_deja_vu",
+        "name": "Déjà Vu",
+        "duration_ms": 213000,
+        "track_number": 3,
+        "disc_number": 1,
+        "artists": [{ "id": "artist_les_amies", "name": "Las Amigas" }],
+        "album": {
+          "id": "album_espejismo",
+          "name": "Espejismo",
+          "album_type": "album",
+          "total_tracks": 10,
+          "release_date": "2023-04-14",
+          "release_date_precision": "day",
+          "artists": [{ "id": "artist_les_amies", "name": "Las Amigas" }],
+          "images": [{ "url": "https://i.scdn.co/image/espejismo.jpg", "height": 640, "width": 640 }]
+        }
+      },
+      "played_at": "2026-07-20T10:15:30.123Z"
+    },
+    {
+      "track": {
+        "id": "track_horizonte",
+        "name": "Horizonte",
+        "duration_ms": 198500,
+        "track_number": 1,
+        "disc_number": 1,
+        "artists": [{ "id": "artist_les_amies", "name": "Las Amigas" }],
+        "album": {
+          "id": "album_espejismo",
+          "name": "Espejismo",
+          "album_type": "album",
+          "total_tracks": 10,
+          "release_date": "2023-04-14",
+          "release_date_precision": "day",
+          "artists": [{ "id": "artist_les_amies", "name": "Las Amigas" }],
+          "images": [{ "url": "https://i.scdn.co/image/espejismo.jpg", "height": 640, "width": 640 }]
+        }
+      },
+      "played_at": "2026-07-20T09:00:00.000Z"
+    },
+    {
+      "track": {
+        "id": "track_estatico",
+        "name": "Estático",
+        "duration_ms": 240750,
+        "track_number": 1,
+        "disc_number": 1,
+        "artists": [{ "id": "artist_ruido_util", "name": "Ruido Útil" }],
+        "album": {
+          "id": "album_estatico_single",
+          "name": "Estático",
+          "album_type": "single",
+          "total_tracks": 1,
+          "release_date": "2025",
+          "release_date_precision": "year",
+          "artists": [{ "id": "artist_ruido_util", "name": "Ruido Útil" }],
+          "images": [{ "url": "https://i.scdn.co/image/estatico.jpg", "height": 640, "width": 640 }]
+        }
+      },
+      "played_at": "2026-07-19T22:10:05.000Z"
+    }
+  ],
+  "next": null,
+  "cursors": { "after": "1784629800000", "before": "1784607005000" },
+  "limit": 50
+}
