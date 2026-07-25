@@ -33,8 +33,8 @@ export default async function Estadisticas({ searchParams }: PageProps<'/estadis
       topTracks(rango, LIMITE_RANKING),
       genreDistribution(rango),
       monthlyActivity(rango),
-      averageRatingByArtist(),
-      averageRatingByGenre(),
+      averageRatingByArtist(undefined, undefined, rango),
+      averageRatingByGenre(undefined, undefined, rango),
     ])
 
   const maxArtista = artistas[0]?.listenCount ?? 0
@@ -164,9 +164,8 @@ export default async function Estadisticas({ searchParams }: PageProps<'/estadis
         </Panel>
       </div>
 
-      {/* Calificaciones medias: no dependen del rango de fecha elegido, porque
-          averageRatingByArtist/averageRatingByGenre resumen todas las reseñas
-          históricas, no sólo las de un periodo. */}
+      {/* Las calificaciones medias sí siguen el rango elegido, acotadas por la
+          fecha en que se escribió cada reseña. */}
       <div className="mt-4 grid gap-4 lg:grid-cols-2">
         <Panel titulo="Calificación media por artista">
           <ListaCalificaciones

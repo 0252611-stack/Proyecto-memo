@@ -84,3 +84,66 @@ describe('averageRatingByGenre', () => {
     expect(await averageRatingByGenre(undefined, db)).toEqual([])
   })
 })
+
+describe('rango de fechas en las calificaciones medias', () => {
+  // El selector de rango de /estadisticas depende de esto: sin el rango, cambiar de
+  // periodo dejaba estas secciones inmóviles y la página parecía rota.
+  async function sembrarDosEpocas() {
+    const artist = await db.artist.create({ data: { name: 'Portishead' } })
+    const genero = await db.genre.create({ data: { name: 'Trip hop', slug: 'trip-hop' } })
+    const viejo = await db.album.create({ data: { title: 'Dummy', artistId: artist.id } })
+    const nuevo = await db.album.create({ data: { title: 'Third', artistId: artist.id } })
+    await db.albumGenre.create({ data: { albumId: viejo.id, genreId: genero.id } })
+    await db.albumGenre.create({ data: { albumId: nuevo.id, genreId: genero.id } })
+
+    // createReview fija createdAt al momento actual, así que la reseña antigua se
+    // reescribe después para situarla en el pasado.
+    const antigua = await createReview({ albumId: viejo.id, rating: 4 }, db)
+    await db.review.update({
+      where: { id: antigua.id },
+      data: { createdAt: new Date('2020-01-15T00:00:00Z') },
+    })
+    await createReview({ albumId: nuevo.id, rating: 10 }, db)
+    return { artist, genero }
+  }
+
+  it('acota por artista sólo las reseñas dentro del rango', async () => {
+    await sembrarDosEpocas()
+
+    const todo = await averageRatingByArtist(undefined, db)
+    expect(todo[0].reviewCount).toBe(2)
+    expect(todo[0].averageRating).toBe(7) // (4 + 10) / 2
+
+    const recientes = await averageRatingByArtist(undefined, db, {
+      from: new Date('2024-01-01T00:00:00Z'),
+    })
+    expect(recientes[0].reviewCount).toBe(1)
+    expect(recientes[0].averageRating).toBe(10)
+
+    const antiguas = await averageRatingByArtist(undefined, db, {
+      to: new Date('2021-01-01T00:00:00Z'),
+    })
+    expect(antiguas[0].reviewCount).toBe(1)
+    expect(antiguas[0].averageRating).toBe(4)
+  })
+
+  it('acota por género sólo las reseñas dentro del rango', async () => {
+    await sembrarDosEpocas()
+
+    const todo = await averageRatingByGenre(undefined, db)
+    expect(todo[0].reviewCount).toBe(2)
+
+    const recientes = await averageRatingByGenre(undefined, db, {
+      from: new Date('2024-01-01T00:00:00Z'),
+    })
+    expect(recientes[0].reviewCount).toBe(1)
+    expect(recientes[0].averageRating).toBe(10)
+  })
+
+  it('devuelve una lista vacía si el rango no abarca ninguna reseña', async () => {
+    await sembrarDosEpocas()
+    const futuro = { from: new Date('2099-01-01T00:00:00Z') }
+    expect(await averageRatingByArtist(undefined, db, futuro)).toEqual([])
+    expect(await averageRatingByGenre(undefined, db, futuro)).toEqual([])
+  })
+})
