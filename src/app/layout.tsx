@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Poppins, Righteous } from 'next/font/google'
+import { Navegacion } from '@/components/Navegacion'
 import './globals.css'
 
 // next/font descarga y auto-hospeda las fuentes en tiempo de compilación: no hay
@@ -35,7 +36,17 @@ export default function RootLayout({
       className={`${poppins.variable} ${righteous.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
-        {children}
+        <a
+          href="#contenido"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-lg focus:bg-accent focus:px-4 focus:py-2 focus:text-on-accent"
+        >
+          Saltar al contenido
+        </a>
+        <Navegacion />
+        {/* El relleno inferior evita que la barra de navegación móvil tape el contenido */}
+        <main id="contenido" className="flex-1 pb-24 md:pb-8">
+          {children}
+        </main>
       </body>
     </html>
   )
