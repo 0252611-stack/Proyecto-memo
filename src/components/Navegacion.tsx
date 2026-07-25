@@ -1,6 +1,6 @@
 'use client'
 
-import { BarChart3, Disc3, Home, Library, PenLine } from 'lucide-react'
+import { BarChart3, Disc3, Home, Library, PenLine, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/cn'
@@ -57,6 +57,23 @@ export function Navegacion() {
               </Link>
             )
           })}
+
+          {/* Ajustes va aparte y no cuenta contra el límite de cinco destinos: es una
+              ruta que se visita de vez en cuando, no parte del recorrido diario. */}
+          <Link
+            href="/ajustes"
+            aria-current={estaActivo(pathname, '/ajustes') ? 'page' : undefined}
+            aria-label="Ajustes"
+            className={cn(
+              'objetivo-tactil ml-auto flex items-center justify-center rounded-lg transition-colors',
+              estaActivo(pathname, '/ajustes')
+                ? 'bg-muted text-foreground'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+            )}
+            style={{ transitionDuration: 'var(--duracion-rapida)' }}
+          >
+            <Settings size={18} aria-hidden />
+          </Link>
         </nav>
       </header>
 

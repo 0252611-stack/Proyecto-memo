@@ -1,4 +1,4 @@
-import { Disc3, PenLine } from 'lucide-react'
+import { Disc3, PenLine, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { BarraProporcion, Cifra, Panel, SinDatos } from '@/components/Panel'
 import { Estrellas } from '@/components/ui/Estrellas'
@@ -36,10 +36,23 @@ export default async function Inicio() {
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-8">
-      <h1 className="font-display text-3xl text-foreground">Tu diario musical</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Lo que has escuchado y lo que has escrito sobre ello.
-      </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl text-foreground">Tu diario musical</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Lo que has escuchado y lo que has escrito sobre ello.
+          </p>
+        </div>
+        {/* En escritorio los ajustes están en la barra superior; en móvil la barra
+            inferior está llena, así que la entrada vive aquí. */}
+        <Link
+          href="/ajustes"
+          aria-label="Ajustes"
+          className="objetivo-tactil flex shrink-0 items-center justify-center rounded-lg border border-border-strong text-muted-foreground md:hidden"
+        >
+          <Settings size={18} aria-hidden />
+        </Link>
+      </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Cifra valor={totales.totalListens} etiqueta="escuchas" />

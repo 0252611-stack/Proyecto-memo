@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 import { PortadaAlbum } from '@/components/PortadaAlbum'
 import { SinDatos } from '@/components/Panel'
@@ -36,11 +36,23 @@ export default async function Catalogo({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 md:px-6 md:py-8">
-      <h1 className="font-display text-3xl text-foreground">Catálogo</h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        {generos.length} géneros · {artistas.length} artistas · {albums.length} álbumes
-        {hayFiltro ? ' con este filtro' : ''}
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-3xl text-foreground">Catálogo</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {generos.length} géneros · {artistas.length} artistas · {albums.length} álbumes
+            {hayFiltro ? ' con este filtro' : ''}
+          </p>
+        </div>
+        <Link
+          href="/catalogo/importar"
+          className="objetivo-tactil inline-flex items-center gap-2 rounded-lg border border-border-strong px-4 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
+          style={{ transitionDuration: 'var(--duracion-rapida)' }}
+        >
+          <Plus size={16} aria-hidden />
+          Añadir música
+        </Link>
+      </div>
 
       {/* Búsqueda por GET: la consulta queda en la URL, así se puede compartir y
           funciona sin JavaScript. */}

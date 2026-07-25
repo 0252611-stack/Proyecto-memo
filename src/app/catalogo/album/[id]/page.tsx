@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { PortadaAlbum } from '@/components/PortadaAlbum'
 import { Estrellas } from '@/components/ui/Estrellas'
 import { obtenerAlbum } from '@/lib/catalog/browse'
+import { BotonEscucharAlbum, BotonEscucharCancion } from './BotonesEscucha'
 
 export const dynamic = 'force-dynamic'
 
@@ -85,6 +86,10 @@ export default async function DetalleAlbum({
           ) : null}
 
           <div className="mt-5">
+            <BotonEscucharAlbum trackIds={album.tracks.map((t) => t.id)} />
+          </div>
+
+          <div className="mt-4">
             {resena ? (
               <div className="rounded-xl border border-border bg-surface p-4">
                 <div className="flex items-center gap-3">
@@ -134,6 +139,7 @@ export default async function DetalleAlbum({
                     </span>
                   ) : null}
                 </span>
+                <BotonEscucharCancion trackId={t.id} titulo={t.title} />
                 {t.reviews[0] ? (
                   <Estrellas rating={t.reviews[0].rating} size={13} />
                 ) : (
