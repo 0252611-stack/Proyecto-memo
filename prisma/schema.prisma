@@ -1,0 +1,192 @@
+// Memo — esquema de datos
+// Ver docs/specs/2026-07-25-memo-design.md
+//
+// SQLite no soporta enums nativos en Prisma. Los campos que representan un conjunto
+// cerrado de valores se guardan como String y se validan con zod en src/lib/schemas.ts,
+// que es la única fuente de verdad de esos valores permitidos.
+
+// La URL de conexión vive en prisma.config.ts (requisito de Prisma 7).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Artist {
+  id          String   @id @default(cuid())
+  mbid        String?  @unique // MusicBrainz ID
+  spotifyId   String?  @unique
+  name        String
+  sortName    String?
+  country     String?
+  formedYear  Int?
+  imageUrl    String?
+  bio         String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  albums Album[]
+  tracks Track[]
+  genres ArtistGenre[]
+
+  @@index([name])
+}
+
+model Genre {
+  id    String @id @default(cuid())
+  name  String @unique
+  slug  String @unique
+  color String? // hex opcional para la visualización de géneros
+
+  artists ArtistGenre[]
+  albums  AlbumGenre[]
+  tracks  TrackGenre[]
+}
+
+model Album {
+  id          String    @id @default(cuid())
+  mbid        String?   @unique
+  spotifyId   String?   @unique
+  title       String
+  artistId    String
+  albumType   String    @default("LP") // LP | EP | SINGLE | COMPILATION
+  releaseDate DateTime?
+  coverUrl    String?
+  totalTracks Int?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  artist  Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  tracks  Track[]
+  genres  AlbumGenre[]
+  reviews Review[]
+
+  @@index([artistId])
+  @@index([title])
+}
+
+model Track {
+  id          String   @id @default(cuid())
+  mbid        String?  @unique
+  spotifyId   String?  @unique
+  title       String
+  artistId    String
+  albumId     String?
+  trackNumber Int?
+  discNumber  Int?
+  durationMs  Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  artist  Artist       @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  album   Album?       @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  genres  TrackGenre[]
+  listens Listen[]
+  reviews Review[]
+
+  @@index([artistId])
+  @@index([albumId])
+  @@index([title])
+}
+
+// --- Relaciones muchos-a-muchos con género ---
+// Explícitas (no implícitas) para poder añadir metadatos después, por ejemplo si el
+// género vino de MusicBrainz o lo asignaste tú.
+
+model ArtistGenre {
+  artistId String
+  genreId  String
+  source   String @default("MANUAL") // MANUAL | MUSICBRAINZ | SPOTIFY
+
+  artist Artist @relation(fields: [artistId], references: [id], onDelete: Cascade)
+  genre  Genre  @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([artistId, genreId])
+  @@index([genreId])
+}
+
+model AlbumGenre {
+  albumId String
+  genreId String
+  source  String @default("MANUAL")
+
+  album Album @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([albumId, genreId])
+  @@index([genreId])
+}
+
+model TrackGenre {
+  trackId String
+  genreId String
+  source  String @default("MANUAL")
+
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+  genre Genre @relation(fields: [genreId], references: [id], onDelete: Cascade)
+
+  @@id([trackId, genreId])
+  @@index([genreId])
+}
+
+// --- Registro de escuchas ---
+
+model Listen {
+  id       String   @id @default(cuid())
+  trackId  String
+  playedAt DateTime
+  source   String   @default("MANUAL") // MANUAL | SPOTIFY | IMPORT
+  msPlayed Int?
+
+  track Track @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  // Hace idempotente la sincronización con Spotify: reimportar el mismo historial
+  // no duplica reproducciones.
+  @@unique([trackId, playedAt])
+  @@index([playedAt])
+}
+
+// --- Reseñas ---
+// Una reseña apunta a un álbum O a una canción, nunca a ambos ni a ninguno.
+// La restricción se aplica con un CHECK en la migración, no sólo en la aplicación.
+
+model Review {
+  id          String    @id @default(cuid())
+  albumId     String?
+  trackId     String?
+  rating      Int // 1..10, la interfaz lo muestra como 0.5..5 estrellas
+  title       String?
+  body        String?
+  context     String? // dónde y cómo lo escuchaste
+  listenedOn  DateTime?
+  isFavorite  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  album Album? @relation(fields: [albumId], references: [id], onDelete: Cascade)
+  track Track? @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@index([albumId])
+  @@index([trackId])
+  @@index([createdAt])
+}
+
+// --- Conexión con Spotify ---
+// Fila única (id = "singleton"). Guardar los tokens en la base de datos, y no sólo en
+// la sesión, permite que la sincronización corra sin que haya una sesión activa.
+
+model SpotifyAccount {
+  id            String   @id @default("singleton")
+  accessToken   String
+  refreshToken  String
+  expiresAt     DateTime
+  scope         String
+  spotifyUserId String?
+  displayName   String?
+  lastSyncedAt  DateTime?
+  updatedAt     DateTime @updatedAt
+}
